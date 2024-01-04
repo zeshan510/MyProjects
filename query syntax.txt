@@ -1,0 +1,329 @@
+FOR CREATION OF TABLE:
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema UMTminiStudentManagementSystem
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema UMTminiStudentManagementSystem
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `UMTminiStudentManagementSystem` DEFAULT CHARACTER SET utf8 ;
+-- -----------------------------------------------------
+-- Schema umtministudentmanagementsystem
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema umtministudentmanagementsystem
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `umtministudentmanagementsystem` DEFAULT CHARACTER SET utf8 ;
+USE `UMTminiStudentManagementSystem` ;
+
+-- -----------------------------------------------------
+-- Table `UMTminiStudentManagementSystem`.`program`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UMTminiStudentManagementSystem`.`program` (
+  `ID` INT NOT NULL,
+  `Name` VARCHAR(45) NOT NULL,
+  `Duration` INT NOT NULL,
+  PRIMARY KEY (`ID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UMTminiStudentManagementSystem`.`Student`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UMTminiStudentManagementSystem`.`Student` (
+  `ID` BIGINT(40) NOT NULL,
+  `FirstName` VARCHAR(45) NULL,
+  `middleName` VARCHAR(45) NULL,
+  `LastName` VARCHAR(45) NULL,
+  `studentAddress` VARCHAR(45) NULL,
+  `DOB` DATETIME NULL,
+  `programID` INT NOT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_student_program1_idx` (`programID` ASC) VISIBLE,
+  CONSTRAINT `fk_student_program1`
+    FOREIGN KEY (`programID`)
+    REFERENCES `UMTminiStudentManagementSystem`.`program` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UMTminiStudentManagementSystem`.`Department`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UMTminiStudentManagementSystem`.`Department` (
+  `ID` INT NOT NULL,
+  `name` VARCHAR(45) NULL,
+  PRIMARY KEY (`ID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UMTminiStudentManagementSystem`.`Subjects`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UMTminiStudentManagementSystem`.`Subjects` (
+  `ID` VARCHAR(10) NOT NULL,
+  `Name` VARCHAR(45) NULL,
+  `Department_ID` INT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_Subjects_Department1_idx` (`Department_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_Subjects_Department1`
+    FOREIGN KEY (`Department_ID`)
+    REFERENCES `UMTminiStudentManagementSystem`.`Department` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UMTminiStudentManagementSystem`.`Teacher`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UMTminiStudentManagementSystem`.`Teacher` (
+  `ID` INT NOT NULL,
+  `firstName` VARCHAR(45) NOT NULL,
+  `middleName` VARCHAR(45) NULL,
+  `lastName` VARCHAR(45) NULL,
+  `Salary` INT NOT NULL,
+  `Department_ID` INT NOT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_Teacher_Department1_idx` (`Department_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_Teacher_Department1`
+    FOREIGN KEY (`Department_ID`)
+    REFERENCES `UMTminiStudentManagementSystem`.`Department` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UMTminiStudentManagementSystem`.`teacher_subject`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UMTminiStudentManagementSystem`.`teacher_subject` (
+  `Subjects_ID` VARCHAR(10) NOT NULL,
+  `Teacher_ID` INT NOT NULL,
+  PRIMARY KEY (`Subjects_ID`, `Teacher_ID`),
+  INDEX `fk_Subjects_has_Teacher_Teacher1_idx` (`Teacher_ID` ASC) VISIBLE,
+  INDEX `fk_Subjects_has_Teacher_Subjects1_idx` (`Subjects_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_Subjects_has_Teacher_Subjects1`
+    FOREIGN KEY (`Subjects_ID`)
+    REFERENCES `UMTminiStudentManagementSystem`.`Subjects` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Subjects_has_Teacher_Teacher1`
+    FOREIGN KEY (`Teacher_ID`)
+    REFERENCES `UMTminiStudentManagementSystem`.`Teacher` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `UMTminiStudentManagementSystem`.`Student_enrollment`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `UMTminiStudentManagementSystem`.`Student_enrollment` (
+  `Student_ID` BIGINT(40) NOT NULL,
+  `Subjects_ID` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`Student_ID`, `Subjects_ID`),
+  INDEX `fk_Student_has_Subjects_Subjects1_idx` (`Subjects_ID` ASC) VISIBLE,
+  INDEX `fk_Student_has_Subjects_Student1_idx` (`Student_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_Student_has_Subjects_Student1`
+    FOREIGN KEY (`Student_ID`)
+    REFERENCES `UMTminiStudentManagementSystem`.`Student` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Student_has_Subjects_Subjects1`
+    FOREIGN KEY (`Subjects_ID`)
+    REFERENCES `UMTminiStudentManagementSystem`.`Subjects` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+USE `umtministudentmanagementsystem` ;
+
+-- -----------------------------------------------------
+-- Table `umtministudentmanagementsystem`.`department`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `umtministudentmanagementsystem`.`department` (
+  `ID` INT NOT NULL,
+  `name` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `umtministudentmanagementsystem`.`program`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `umtministudentmanagementsystem`.`program` (
+  `ID` INT NOT NULL,
+  `Name` VARCHAR(45) NOT NULL,
+  `Duration` INT NOT NULL,
+  PRIMARY KEY (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `umtministudentmanagementsystem`.`student`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `umtministudentmanagementsystem`.`student` (
+  `ID` BIGINT NOT NULL,
+  `FirstName` VARCHAR(45) NULL DEFAULT NULL,
+  `middleName` VARCHAR(45) NULL DEFAULT NULL,
+  `LastName` VARCHAR(45) NULL DEFAULT NULL,
+  `studentAddress` VARCHAR(45) NULL DEFAULT NULL,
+  `DOB` DATETIME NULL DEFAULT NULL,
+  `programID` INT NOT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_student_program1_idx` (`programID` ASC) VISIBLE,
+  CONSTRAINT `fk_student_program1`
+    FOREIGN KEY (`programID`)
+    REFERENCES `umtministudentmanagementsystem`.`program` (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `umtministudentmanagementsystem`.`subjects`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `umtministudentmanagementsystem`.`subjects` (
+  `ID` VARCHAR(10) NOT NULL,
+  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  `Department_ID` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_Subjects_Department1_idx` (`Department_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_Subjects_Department1`
+    FOREIGN KEY (`Department_ID`)
+    REFERENCES `umtministudentmanagementsystem`.`department` (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `umtministudentmanagementsystem`.`student_enrollment`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `umtministudentmanagementsystem`.`student_enrollment` (
+  `Student_ID` BIGINT NOT NULL,
+  `Subjects_ID` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`Student_ID`, `Subjects_ID`),
+  INDEX `fk_Student_has_Subjects_Subjects1_idx` (`Subjects_ID` ASC) VISIBLE,
+  INDEX `fk_Student_has_Subjects_Student1_idx` (`Student_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_Student_has_Subjects_Student1`
+    FOREIGN KEY (`Student_ID`)
+    REFERENCES `umtministudentmanagementsystem`.`student` (`ID`),
+  CONSTRAINT `fk_Student_has_Subjects_Subjects1`
+    FOREIGN KEY (`Subjects_ID`)
+    REFERENCES `umtministudentmanagementsystem`.`subjects` (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `umtministudentmanagementsystem`.`teacher`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `umtministudentmanagementsystem`.`teacher` (
+  `ID` INT NOT NULL,
+  `firstName` VARCHAR(45) NOT NULL,
+  `middleName` VARCHAR(45) NULL DEFAULT NULL,
+  `lastName` VARCHAR(45) NULL DEFAULT NULL,
+  `Salary` INT NOT NULL,
+  `Department_ID` INT NOT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_Teacher_Department1_idx` (`Department_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_Teacher_Department1`
+    FOREIGN KEY (`Department_ID`)
+    REFERENCES `umtministudentmanagementsystem`.`department` (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `umtministudentmanagementsystem`.`teacher_subject`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `umtministudentmanagementsystem`.`teacher_subject` (
+  `Subjects_ID` VARCHAR(10) NOT NULL,
+  `Teacher_ID` INT NOT NULL,
+  PRIMARY KEY (`Subjects_ID`, `Teacher_ID`),
+  INDEX `fk_Subjects_has_Teacher_Teacher1_idx` (`Teacher_ID` ASC) VISIBLE,
+  INDEX `fk_Subjects_has_Teacher_Subjects1_idx` (`Subjects_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_Subjects_has_Teacher_Subjects1`
+    FOREIGN KEY (`Subjects_ID`)
+    REFERENCES `umtministudentmanagementsystem`.`subjects` (`ID`),
+  CONSTRAINT `fk_Subjects_has_Teacher_Teacher1`
+    FOREIGN KEY (`Teacher_ID`)
+    REFERENCES `umtministudentmanagementsystem`.`teacher` (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+FOR INSERTION OF DATA:
+
+INSERT INTO `umtministudentmanagementsystem`.`program` (`ID`, `Name`, `Duration`) VALUES ('1', 'BSCS', '4');
+INSERT INTO `umtministudentmanagementsystem`.`program` (`ID`, `Name`, `Duration`) VALUES ('2', 'BSSE', '4');
+INSERT INTO `umtministudentmanagementsystem`.`program` (`ID`, `Name`, `Duration`) VALUES ('3', 'BSIT', '4');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('91014020001', 'Hassan', 'Butt', 'house h3 iqbal colony sialkot cantt', '2000-05-17', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020002', 'Abdul', 'Hasib', 'house h4 iqbal colony sialkot cantt', '2000-05-17', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020003', 'Husnain', 'Jalferazy', 'house h5 iqbal colony sialkot cantt', '2000-05-17', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020006', 'Muneeb', 'rehman', 'house h6 iqbal colony sialkot cantt', '2000-05-17', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020019', 'Reemab', 'George', 'house h7 iqbal colony sialkot cantt', '2000-05-17', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020023', 'Zeeshan', 'Ahmed', 'house h8 iqbal colony sialkot cantt', '2000-05-17', '1');
+INSERT INTO `umtministudentmanagementsystem`.`department` (`ID`, `name`) VALUES ('1', 'Knowledge unit of science and technology');
+INSERT INTO `umtministudentmanagementsystem`.`department` (`ID`, `name`) VALUES ('2', 'knowlege unit of science');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('ma101', 'Calculus1', '2');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('en11', 'english', '2');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('db1', 'database', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020002', 'db1');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020003', 'en11');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020006', 'ma101');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `middleName`, `lastName`, `Salary`, `Department_ID`) VALUES ('1', 'ALI', 'USMAN', 'KHAN', '30000', '1');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `middleName`, `lastName`, `Salary`, `Department_ID`) VALUES ('2', 'AHMED', 'IBHRAHIM', 'MALIK', '32000', '1');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `middleName`, `lastName`, `Salary`, `Department_ID`) VALUES ('3', 'ZEESHAN', 'AHMED', 'SHIEKH', '40000', '2');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('db1', '1');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('en11', '2');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('ma101', '3');
+UPDATE `umtministudentmanagementsystem`.`student` SET `ID` = '19014020001' WHERE (`ID` = '91014020001');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020005', 'hamid', 'murtaza', 'house h9 daska', '2000-05-17 00:00:00', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020022', 'muzamil', 'ali', 'house h1 harar', '2000-05-17 00:00:00', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020016', 'shifa', 'ali', 'house h2 model town', '2000-05-17 00:00:00', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student` (`ID`, `FirstName`, `LastName`, `studentAddress`, `DOB`, `programID`) VALUES ('19014020017', 'ibrar', 'ahmed', 'cantt', '2000-05-17 00:00:00', '1');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('coal4', 'computer organization and assembly language', '1');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('dsa3', 'data structure and algorithm', '1');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('pf1', 'programming fundamental', '1');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('oop2', 'object oriented programming', '1');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('cn6', 'computer network', '1');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('fg3', 'foriegn language', '2');
+INSERT INTO `umtministudentmanagementsystem`.`subjects` (`ID`, `Name`, `Department_ID`) VALUES ('os6', 'operating system', '1');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020019', 'coal4');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020023', 'dsa3');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020001', 'fg3');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020005', 'oop2');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020022', 'os6');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020016', 'pf1');
+INSERT INTO `umtministudentmanagementsystem`.`student_enrollment` (`Student_ID`, `Subjects_ID`) VALUES ('19014020017', 'cn6');
+UPDATE `umtministudentmanagementsystem`.`teacher` SET `firstName` = 'shakra', `middleName` = '', `lastName` = 'mehak', `Salary` = '100000' WHERE (`ID` = '1');
+UPDATE `umtministudentmanagementsystem`.`teacher` SET `firstName` = 'maroof', `middleName` = '', `lastName` = 'kaosar', `Salary` = '100000' WHERE (`ID` = '2');
+UPDATE `umtministudentmanagementsystem`.`teacher` SET `firstName` = 'zahra', `middleName` = '', `lastName` = 'batool', `Department_ID` = '1' WHERE (`ID` = '3');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `lastName`, `Salary`, `Department_ID`) VALUES ('4', 'sehrish', 'munawar', '1000', '1');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `lastName`, `Salary`, `Department_ID`) VALUES ('5', 'hammad', 'naqvi', '200000', '1');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `lastName`, `Salary`, `Department_ID`) VALUES ('6', 'asif', 'mehmood', '39000', '2');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `lastName`, `Salary`, `Department_ID`) VALUES ('7', 'abdul', 'hanan', '42000', '1');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `lastName`, `Salary`, `Department_ID`) VALUES ('8', 'hifza', 'munir', '50000', '1');
+INSERT INTO `umtministudentmanagementsystem`.`teacher` (`ID`, `firstName`, `lastName`, `Salary`, `Department_ID`) VALUES ('9', 'hamna', 'malik', '51000', '1');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('cn6', '4');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('coal4', '5');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('dsa3', '6');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('fg3', '7');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('oop2', '2');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('os6', '8');
+INSERT INTO `umtministudentmanagementsystem`.`teacher_subject` (`Subjects_ID`, `Teacher_ID`) VALUES ('pf1', '9');
+
